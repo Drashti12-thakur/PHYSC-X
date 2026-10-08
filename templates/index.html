@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PHYS-X Smart Environment Monitoring</title>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
+        }
+
+        .header {
+            background: #111827;
+            color: white;
+            padding: 25px 50px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        .header p {
+            margin-top: 8px;
+            color: #d1d5db;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        .object-name {
+            font-size: 16px;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+
+        .count {
+            font-size: 32px;
+            font-weight: bold;
+            color: #111827;
+        }
+
+        .upload-box {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .upload-box h2 {
+            margin-top: 0;
+        }
+
+        input[type="file"] {
+            margin: 20px 0;
+            padding: 10px;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            background: #111827;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #374151;
+        }
+
+        .live-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .live-button:hover {
+            background: #1d4ed8;
+        }
+
+        .results {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .results h2 {
+            margin-top: 0;
+        }
+
+        .detected-image {
+            width: 100%;
+            max-width: 800px;
+            display: block;
+            margin: 20px auto;
+            border-radius: 10px;
+        }
+
+        .object-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .history {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: center;
+        }
+
+        th {
+            background: #111827;
+            color: white;
+        }
+
+        canvas {
+            margin-top: 20px;
+            max-height: 450px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #6b7280;
+        }
+
+        @media (max-width: 700px) {
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 25px;
+            }
+
+            .header h1 {
+                font-size: 26px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+    <h1>PHYS-X</h1>
+
+    <p>
+        Smart Environment Monitoring Using AI and Computer Vision
+    </p>
+
+</div>
+
+
+<div class="container">
+
+
+<!-- =========================
+     DASHBOARD STATISTICS
+========================= -->
+
+{% if history %}
+
+<div class="cards">
+
+    <div class="card">
+
+        <div class="object-name">
+            Detection Records
+        </div>
+
+        <div class="count">
+            {{ total_records }}
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="object-name">
+            Total Objects
+        </div>
+
+        <div class="count">
+            {{ total_objects }}
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="object-name">
+            Most Detected
+        </div>
+
+        <div class="count"
+             style="font-size: 22px; text-transform: capitalize;">
+
+            {{ most_detected }}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+
+<!-- =========================
+     IMAGE UPLOAD
+========================= -->
+
+<div class="upload-box">
+    <p>
+    <strong>Confidence Threshold:</strong> 50%
+</p>
+
+    <h2>
+        Upload Image for Detection
+    </h2>
+
+    <p>
+        Upload an image and PHYS-X will detect and count objects using YOLO.
+    </p>
+
+
+    <form method="POST"
+          enctype="multipart/form-data">
+
+        <input
+            type="file"
+            name="image"
+            accept="image/*"
+            required
+        >
+
+        <br>
+
+        <button type="submit">
+            🔍 Detect Objects
+        </button>
+
+    </form>
+
+
+    <a href="/live" class="live-button">
+        📷 Start Live Camera
+    </a>
+
+    <a href="/download" class="live-button">
+    📥 Download Detection Report
+</a>
+<a href="/clear"
+   class="live-button"
+   onclick="return confirm('Are you sure you want to clear all detection history?');">
+    🗑️ Clear Detection History
+</a>
+
+</div>
+
+
+<!-- =========================
+     DETECTION RESULTS
+========================= -->
+
+{% if result_image %}
+
+<div class="results">
+
+    <h2>
+        Detection Results
+    </h2>
+
+
+    {% if timestamp %}
+
+    <p>
+
+        <strong>Detection Time:</strong>
+
+        {{ timestamp }}
+
+    </p>
+
+    {% endif %}
+
+
+    <img
+        src="{{ url_for('static', filename=result_image) }}"
+        class="detected-image"
+    >
+
+
+    {% if counts %}
+
+    <h3>
+        Detected Objects
+    </h3>
+
+
+    <div class="object-cards">
+
+
+        {% for object_name, count in counts.items() %}
+
+        <div class="card">
+
+            <div class="object-name">
+                {{ object_name }}
+            </div>
+
+            <div class="count">
+                {{ count }}
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endif %}
+
+
+<!-- =========================
+     DETECTION HISTORY
+========================= -->
+
+{% if history %}
+
+<div class="history">
+
+    <h2>
+        Detection History
+    </h2>
+
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>
+                    Timestamp
+                </th>
+
+                <th>
+                    Object
+                </th>
+
+                <th>
+                    Count
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+
+            {% for row in history %}
+
+            <tr>
+
+                <td>
+                    {{ row["Timestamp"] }}
+                </td>
+
+                <td style="text-transform: capitalize;">
+                    {{ row["Object"] }}
+                </td>
+
+                <td>
+                    {{ row["Count"] }}
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<!-- =========================
+     DETECTION CHART
+========================= -->
+
+<div class="history" style="margin-top: 30px;">
+
+    <h2>
+        📊 Object Detection Summary
+    </h2>
+
+
+    <canvas id="detectionChart"></canvas>
+
+</div>
+
+
+<script>
+
+    const objectData = {};
+
+   
+    {% for row in history %}
+
+    const objectName = "{{ row['Object'] }}";
+
+    const objectCount = Number("{{ row['Count'] }}");
+
+    if (objectData[objectName]) {
+
+        objectData[objectName] += objectCount;
+
+    }
+
+    else {
+
+        objectData[objectName] = objectCount;
+
+    }
+
+    {% endfor %}
+
+
+    const chartLabels = Object.keys(objectData);
+
+    const chartValues = Object.values(objectData);
+
+
+    new Chart(
+
+        document.getElementById("detectionChart"),
+
+        {
+
+            type: "bar",
+
+            data: {
+
+                labels: chartLabels,
+
+                datasets: [
+
+                    {
+
+                        label: "Objects Detected",
+
+                        data: chartValues
+
+                    }
+
+                ]
+
+            },
+
+
+            options: {
+
+                responsive: true,
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        ticks: {
+
+                            stepSize: 1
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    );
+
+</script>
+
+{% endif %}
+
+
+</div>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<div class="footer">
+
+    <p>
+        PHYS-X | AI & Computer Vision Based Smart Environment Monitoring
+    </p>
+
+</div>
+
+
+</body>
+
+</html>

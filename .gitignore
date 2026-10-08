@@ -1,0 +1,10 @@
+venv/
+__pycache__/
+*.pyc
+
+detection_log.csv
+
+static/uploaded_image.jpg
+static/detected_image.jpg
+
+*.pt

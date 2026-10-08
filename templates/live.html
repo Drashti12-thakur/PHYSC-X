@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PHYS-X Live Monitoring</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #1f2937;
+        }
+
+        /* Header */
+
+        .header {
+            background: #111827;
+            color: white;
+            padding: 25px 50px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        .header p {
+            margin: 8px 0 0;
+            color: #d1d5db;
+        }
+
+        /* Main */
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Monitoring card */
+
+        .monitor-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .monitor-title {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .monitor-title h2 {
+            margin: 0;
+            font-size: 25px;
+        }
+
+        .monitor-title p {
+            color: #6b7280;
+        }
+
+        /* Camera */
+
+        .camera-container {
+            background: #111827;
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .camera-feed {
+            width: 100%;
+            max-width: 900px;
+            display: block;
+            margin: auto;
+            border-radius: 8px;
+        }
+
+        /* Status */
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .status span {
+            font-weight: bold;
+        }
+
+        /* Buttons */
+
+        .buttons {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 12px 25px;
+            background: #111827;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .back-button:hover {
+            background: #374151;
+        }
+
+        /* Footer */
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #6b7280;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- Header -->
+
+<div class="header">
+
+    <h1>PHYS-X</h1>
+
+    <p>
+        Smart Environment Monitoring Using AI and Computer Vision
+    </p>
+
+</div>
+
+
+<!-- Main -->
+
+<div class="container">
+
+    <div class="monitor-card">
+
+
+        <div class="monitor-title">
+
+            <h2>
+                📷 Live Environment Monitoring
+            </h2>
+
+            <p>
+                Real-time object detection using YOLO
+            </p>
+
+        </div>
+
+
+        <!-- Camera -->
+
+        <div class="camera-container">
+
+            <img
+                src="{{ url_for('video_feed') }}"
+                class="camera-feed"
+                alt="PHYS-X Live Camera"
+            >
+
+        </div>
+
+
+        <!-- Status -->
+
+        <div class="status">
+            <p>
+    <strong>Confidence Threshold:</strong> 50%
+</p>
+
+            🟢
+            <span>Live Detection Active</span>
+
+            <br>
+
+            YOLO is analyzing the camera feed in real time.
+
+        </div>
+
+
+        <!-- Back -->
+
+        <div class="buttons">
+
+            <a
+                href="/"
+                class="back-button"
+            >
+                ← Back to Dashboard
+            </a>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- Footer -->
+
+<div class="footer">
+
+    <p>
+        PHYS-X | AI & Computer Vision Based Smart Environment Monitoring
+    </p>
+
+</div>
+
+
+</body>
+
+</html>
